@@ -7,45 +7,6 @@
 
 import Foundation
 
-protocol NotifierProtocol {
-  typealias UserInfo = [AnyHashable: Any]?
-  typealias ObserverBlock = (UserInfo) -> Void
-  typealias ObserversProperty = [Notifier.Name: [ObserverBlock]]
-
-  func add(with key: Notifier.Name, withValue value: @escaping ObserverBlock)
-  func findValue(with key: Notifier.Name) -> [ObserverBlock]?
-  func remove(from key: Notifier.Name)
-}
-
-
-final class Notifier: NotifierProtocol {
-
-  private var observers: ObserversProperty
-
-  init() {
-    self.observers = [:]
-  }
-
-  func add(with key: Name, withValue value: (UserInfo) -> Void) {
-
-  }
-
-  func findValue(with key: Name) -> [ObserverBlock]? {
-    return observers[key]
-  }
-
-  func remove(from key: Name) {
-
-  }
-}
-
-extension Notifier {
-  struct Name: Hashable {
-    let rawValue: String
-  }
-}
-
-
 class NotifierCenter {
 
   static let `default` = NotifierCenter()

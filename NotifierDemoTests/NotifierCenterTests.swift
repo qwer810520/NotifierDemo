@@ -10,7 +10,7 @@ import XCTest
 
 class NotifierCenterTests: XCTestCase {
 
-  func test_init_doesNotRequestDataFromURL() {
+  func test_init_doesNotObserverInNotifier() {
     let (_, spy) = makeSUT()
 
     XCTAssertEqual(spy.dicCount(), 0)
@@ -21,7 +21,7 @@ class NotifierCenterTests: XCTestCase {
     let key = Notifier.Name.testSampleKey
     sut.addObserver(with: key) { _ in }
 
-    let result = spy.findValue(with: key)
+    let result = spy.observers[key]
 
     XCTAssertNotNil(result)
     XCTAssertEqual(result?.count, 1)
@@ -90,11 +90,12 @@ class NotifierCenterTests: XCTestCase {
 
   func test_removeObserver_deliversObserverThanRemoveCheckObserversIsEmpty() {
     let (sut, spy) = makeSUT()
+    let key = Notifier.Name.testSampleKey
 
-    sut.addObserver(with: .testSampleKey) { _ in }
-    sut.removeObserver(with: .testSampleKey)
+    sut.addObserver(with: key) { _ in }
+    sut.removeObserver(with: key)
 
-    let result = spy.findValue(with: .testSampleKey)
+    let result = spy.observers[key]
 
     XCTAssertNil(result)
   }
@@ -122,7 +123,7 @@ class NotifierCenterTests: XCTestCase {
 
   class NotifierSpy: NotifierProtocol {
 
-    private var observers: ObserversProperty
+    private(set) var observers: ObserversParameter
 
     init() { self.observers = [:] }
 
