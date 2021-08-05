@@ -7,34 +7,69 @@
 
 import Foundation
 
-class NotifierCenter {
+protocol NotifierProtocol {
   typealias UserInfo = [AnyHashable: Any]?
   typealias ObserverBlock = (UserInfo) -> Void
+  typealias ObserversProperty = [Notifier.Name: [ObserverBlock]]
 
-  struct NotifierName: Hashable {
+  func add(with key: Notifier.Name, withValue value: @escaping ObserverBlock)
+  func findValue(with key: Notifier.Name) -> [ObserverBlock]?
+  func remove(from key: Notifier.Name)
+}
+
+
+final class Notifier: NotifierProtocol {
+
+  private var observers: ObserversProperty
+
+  init() {
+    self.observers = [:]
+  }
+
+  func add(with key: Name, withValue value: (UserInfo) -> Void) {
+
+  }
+
+  func findValue(with key: Name) -> [ObserverBlock]? {
+    return observers[key]
+  }
+
+  func remove(from key: Name) {
+
+  }
+}
+
+extension Notifier {
+  struct Name: Hashable {
     let rawValue: String
   }
+}
+
+
+class NotifierCenter {
 
   static let `default` = NotifierCenter()
 
-  private var observers = [NotifierName: [ObserverBlock]]()
+  private var notifier: NotifierProtocol = Notifier()
 
-  init() { }
+  private init() { }
 
-  func addObserver(with key: NotifierCenter.NotifierName, andNotify notify: @escaping ObserverBlock) {
-    if observers[key] != nil {
-      observers[key]?.append(notify)
-    } else {
-      observers[key] = [notify]
-    }
+  convenience init(nofifierObject: NotifierProtocol? = nil) {
+    self.init()
+    guard let object = nofifierObject else { return }
+    self.notifier = object
   }
 
-  func post(name aName: NotifierCenter.NotifierName, userInfo aUserInfo: UserInfo = nil) {
-    guard let observer = observers[aName] else { return }
-    observer.forEach { $0(aUserInfo) }
+  func addObserver(with key: Notifier.Name, andNotify notify: @escaping NotifierProtocol.ObserverBlock) {
+    notifier.add(with: key, withValue: notify)
   }
 
-  func removeObserver(with key: NotifierCenter.NotifierName) {
-    observers.removeValue(forKey: key)
+  func post(name aName: Notifier.Name, userInfo aUserInfo: NotifierProtocol.UserInfo = nil) {
+    guard let blocks = notifier.findValue(with: aName), !blocks.isEmpty else { return }
+    blocks.forEach { $0(aUserInfo) }
+  }
+
+  func removeObserver(with key: Notifier.Name) {
+    notifier.remove(from: key)
   }
 }

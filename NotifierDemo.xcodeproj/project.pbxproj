@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3938F5FE26BBFA0D0065E54B /* NotifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3938F5FD26BBFA0C0065E54B /* NotifierTests.swift */; };
 		3958D86726BA5E0B00AEA9A1 /* NotifierDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3958D85D26BA5E0B00AEA9A1 /* NotifierDemo.framework */; };
-		3958D86C26BA5E0B00AEA9A1 /* NotifierDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3958D86B26BA5E0B00AEA9A1 /* NotifierDemoTests.swift */; };
+		3958D86C26BA5E0B00AEA9A1 /* NotifierCenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3958D86B26BA5E0B00AEA9A1 /* NotifierCenterTests.swift */; };
 		3958D86E26BA5E0B00AEA9A1 /* NotifierDemo.h in Headers */ = {isa = PBXBuildFile; fileRef = 3958D86026BA5E0B00AEA9A1 /* NotifierDemo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3958D88026BAC07300AEA9A1 /* NotifierCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3958D87F26BAC07300AEA9A1 /* NotifierCenter.swift */; };
 /* End PBXBuildFile section */
@@ -24,11 +25,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3938F5FD26BBFA0C0065E54B /* NotifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifierTests.swift; sourceTree = "<group>"; };
 		3958D85D26BA5E0B00AEA9A1 /* NotifierDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NotifierDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3958D86026BA5E0B00AEA9A1 /* NotifierDemo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotifierDemo.h; sourceTree = "<group>"; };
 		3958D86126BA5E0B00AEA9A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3958D86626BA5E0B00AEA9A1 /* NotifierDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotifierDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3958D86B26BA5E0B00AEA9A1 /* NotifierDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifierDemoTests.swift; sourceTree = "<group>"; };
+		3958D86B26BA5E0B00AEA9A1 /* NotifierCenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifierCenterTests.swift; sourceTree = "<group>"; };
 		3958D86D26BA5E0B00AEA9A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3958D87F26BAC07300AEA9A1 /* NotifierCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifierCenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,8 +85,9 @@
 		3958D86A26BA5E0B00AEA9A1 /* NotifierDemoTests */ = {
 			isa = PBXGroup;
 			children = (
-				3958D86B26BA5E0B00AEA9A1 /* NotifierDemoTests.swift */,
+				3958D86B26BA5E0B00AEA9A1 /* NotifierCenterTests.swift */,
 				3958D86D26BA5E0B00AEA9A1 /* Info.plist */,
+				3938F5FD26BBFA0C0065E54B /* NotifierTests.swift */,
 			);
 			path = NotifierDemoTests;
 			sourceTree = "<group>";
@@ -206,7 +209,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3958D86C26BA5E0B00AEA9A1 /* NotifierDemoTests.swift in Sources */,
+				3958D86C26BA5E0B00AEA9A1 /* NotifierCenterTests.swift in Sources */,
+				3938F5FE26BBFA0D0065E54B /* NotifierTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
