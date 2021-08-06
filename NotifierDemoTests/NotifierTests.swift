@@ -16,7 +16,7 @@ class NotifierTests: XCTestCase {
 
     sut.add(with: key) { _ in }
 
-    let result = sut.observers[key]
+    let result = sut.threadSafeObservers[key]
     expect(result)
   }
 
@@ -27,7 +27,7 @@ class NotifierTests: XCTestCase {
     sut.add(with: key) { _ in }
     sut.add(with: key) { _ in }
 
-    let result = sut.observers[key]
+    let result = sut.threadSafeObservers[key]
     expect(result, dataCount: 2)
   }
 
@@ -39,8 +39,8 @@ class NotifierTests: XCTestCase {
     sut.add(with: key1) { _ in }
     sut.add(with: key2) { _ in }
 
-    let result1 = sut.observers[key1]
-    let result2 = sut.observers[key2]
+    let result1 = sut.threadSafeObservers[key1]
+    let result2 = sut.threadSafeObservers[key2]
     expect(result1)
     expect(result2)
   }
@@ -70,9 +70,9 @@ class NotifierTests: XCTestCase {
     sut.add(with: key) { _ in }
     sut.remove(from: key)
 
-    let result = sut.observers[key]
+    let result = sut.threadSafeObservers[key]
     XCTAssertNil(result)
-    XCTAssertTrue(sut.observers.isEmpty)
+    XCTAssertTrue(sut.threadSafeObservers.isEmpty)
   }
 
   // MARK; - Helper
