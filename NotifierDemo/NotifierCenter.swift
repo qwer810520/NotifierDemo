@@ -21,8 +21,8 @@ class NotifierCenter {
     self.notifier = object
   }
 
-  func addObserver(with key: Notifier.Name, andNotify notify: @escaping NotifierProtocol.ObserverBlock) {
-    notifier.add(with: key, withValue: notify)
+  func addObserver(with key: Notifier.Name, object: Any, andNotify notify: @escaping NotifierProtocol.ObserverBlock) {
+    notifier.add(with: key, object: object, withValue: notify)
   }
 
   func post(name aName: Notifier.Name, userInfo aUserInfo: NotifierProtocol.UserInfo = nil) {
@@ -30,7 +30,7 @@ class NotifierCenter {
     blocks.forEach { $0(aUserInfo) }
   }
 
-  func removeObserver(with key: Notifier.Name) {
-    notifier.remove(from: key)
+  func removeObserver(with key: Notifier.Name, object: Any) {
+    notifier.remove(from: key, object: object)
   }
 }

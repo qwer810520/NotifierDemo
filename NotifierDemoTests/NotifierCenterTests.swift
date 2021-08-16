@@ -19,7 +19,7 @@ class NotifierCenterTests: XCTestCase {
   func test_addObserver_deliversObserverNameSaveOnNotifierThenCheckResultCountIs1() {
     let (sut, spy) = makeSUT()
     let key = Notifier.Name.testSampleKey
-    sut.addObserver(with: key) { _ in }
+    sut.addObserver(with: key, object: self) { _ in }
 
     let result = spy.observers[key]
 
@@ -29,8 +29,8 @@ class NotifierCenterTests: XCTestCase {
 
   func test_addObserver_addObserverTwice() {
     let (sut, spy) = makeSUT()
-    sut.addObserver(with: .testSampleKey) { _ in }
-    sut.addObserver(with: .testSampleKey2) { _ in }
+    sut.addObserver(with: .testSampleKey, object: self) { _ in }
+    sut.addObserver(with: .testSampleKey2, object: self) { _ in }
 
     let result = spy.dicCount()
 
@@ -41,7 +41,7 @@ class NotifierCenterTests: XCTestCase {
     let (sut, _) = makeSUT()
     var observerIsCallBackResult = false
     var observerResult: Notifier.UserInfo = nil
-    sut.addObserver(with: .testSampleKey) { observer in
+    sut.addObserver(with: .testSampleKey, object: self) { observer in
       observerResult = observer
       observerIsCallBackResult = true
     }
@@ -56,7 +56,7 @@ class NotifierCenterTests: XCTestCase {
     let (sut, _) = makeSUT()
     var observerIsCallBackResult = false
     var observerResult: NotifierProtocol.UserInfo = nil
-    sut.addObserver(with: .testSampleKey) { observer in
+    sut.addObserver(with: .testSampleKey, object: self) { observer in
       observerResult = observer
       observerIsCallBackResult = true
     }
@@ -73,18 +73,17 @@ class NotifierCenterTests: XCTestCase {
     var observerResult1: NotifierProtocol.UserInfo = nil
     var observerResult2: NotifierProtocol.UserInfo = nil
 
-    sut.addObserver(with: .testSampleKey) { observer in
+    sut.addObserver(with: .testSampleKey, object: self) { observer in
       observerResult1 = observer
     }
-    sut.addObserver(with: .testSampleKey) { observer in
+    sut.addObserver(with: .testSampleKey, object: self) { observer in
       observerResult2 = observer
     }
 
     sut.post(name: .testSampleKey, userInfo: anyUserInfo())
 
-    XCTAssertNotNil(observerResult1)
+    XCTAssertNil(observerResult1)
     XCTAssertNotNil(observerResult2)
-    expect(targetDic: observerResult1, baseDic: anyUserInfo())
     expect(targetDic: observerResult2, baseDic: anyUserInfo())
   }
 
@@ -92,8 +91,8 @@ class NotifierCenterTests: XCTestCase {
     let (sut, spy) = makeSUT()
     let key = Notifier.Name.testSampleKey
 
-    sut.addObserver(with: key) { _ in }
-    sut.removeObserver(with: key)
+    sut.addObserver(with: key, object: self) { _ in }
+    sut.removeObserver(with: key, object: self)
 
     let result = spy.observers[key]
 
@@ -122,25 +121,35 @@ class NotifierCenterTests: XCTestCase {
   }
 
   class NotifierSpy: NotifierProtocol {
-
     private(set) var observers: ObserversParameter
 
     init() { self.observers = [:] }
 
-    func add(with key: Notifier.Name, withValue value: @escaping (UserInfo) -> Void) {
-      if observers[key] != nil {
-        observers[key]?.append(value)
+    func add(with key: Notifier.Name, object: Any, withValue value: @escaping ObserverBlock) {
+      let objectName = "\(type(of: object))"
+      if var values = observers[key], values[objectName] == nil {
+        values[objectName] = value
+        observers[key] = values
       } else {
-        observers[key] = [value]
+        observers[key] = [objectName: value]
       }
     }
 
     func findValue(with key: Notifier.Name) -> [ObserverBlock]? {
-      return observers[key]
+      guard let observers = observers[key]?.values else { return nil }
+      return observers.map { $0 }
     }
 
-    func remove(from key: Notifier.Name) {
-      observers.removeValue(forKey: key)
+    func remove(from key: Notifier.Name, object: Any) {
+      let objectName = "\(type(of: object))"
+      guard var values = observers[key] else { return }
+      values.removeValue(forKey: objectName)
+      switch values.isEmpty {
+        case true:
+          observers.removeValue(forKey: key)
+        case false:
+          observers[key] = values
+      }
     }
 
     func dicCount() -> Int {

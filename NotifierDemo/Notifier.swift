@@ -29,20 +29,31 @@ final class Notifier: NotifierProtocol {
     self.observers = [:]
   }
 
-  func add(with key: Name, withValue value: @escaping (UserInfo) -> Void) {
-    if threadSafeObservers[key] != nil {
-      threadSafeObservers[key]?.append(value)
+  func add(with key: Name, object: Any, withValue value: @escaping ObserverBlock) {
+    let objectName = "\(type(of: object))"
+    if var values = threadSafeObservers[key], values[objectName] == nil {
+      values[objectName] = value
+      threadSafeObservers[key] = values
     } else {
-      threadSafeObservers[key] = [value]
+      threadSafeObservers[key] = [objectName: value]
     }
   }
 
   func findValue(with key: Name) -> [ObserverBlock]? {
-      return threadSafeObservers[key]
+    guard let observers = threadSafeObservers[key]?.values else { return nil }
+    return observers.map { $0 }
   }
 
-  func remove(from key: Name) {
-    threadSafeObservers.removeValue(forKey: key)
+  func remove(from key: Name, object: Any) {
+    let objectName = "\(type(of: object))"
+    guard var values = threadSafeObservers[key] else { return }
+    values.removeValue(forKey: objectName)
+    switch values.isEmpty {
+      case true:
+        threadSafeObservers.removeValue(forKey: key)
+      case false:
+        threadSafeObservers[key] = values
+    }
   }
 }
 

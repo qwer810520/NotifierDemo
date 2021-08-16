@@ -14,21 +14,21 @@ class NotifierTests: XCTestCase {
     let sut = makeSUT()
     let key = makeKey(with: 1)
 
-    sut.add(with: key) { _ in }
+    sut.add(with: key, object: self) { _ in }
 
     let result = sut.threadSafeObservers[key]
-    expect(result)
+    expect(result?.values.map({ $0 }))
   }
 
   func test_addTwice_deliversObserverSaveOneKeyToNotifierTwice() {
     let sut = makeSUT()
     let key = makeKey(with: 0)
 
-    sut.add(with: key) { _ in }
-    sut.add(with: key) { _ in }
+    sut.add(with: key, object: self) { _ in }
+    sut.add(with: key, object: self) { _ in }
 
     let result = sut.threadSafeObservers[key]
-    expect(result, dataCount: 2)
+    expect(result?.values.map({ $0 }), dataCount: 1)
   }
 
   func test_add_deliversObserverSaveWithDifferentKeyToNotifier() {
@@ -36,13 +36,13 @@ class NotifierTests: XCTestCase {
     let key1 = makeKey(with: 1)
     let key2 = makeKey(with: 2)
 
-    sut.add(with: key1) { _ in }
-    sut.add(with: key2) { _ in }
+    sut.add(with: key1, object: self) { _ in }
+    sut.add(with: key2, object: self) { _ in }
 
     let result1 = sut.threadSafeObservers[key1]
     let result2 = sut.threadSafeObservers[key2]
-    expect(result1)
-    expect(result2)
+    expect(result1?.values.map({ $0 }))
+    expect(result2?.values.map({ $0 }))
   }
 
   func test_find_doesNotFindObserverFromNotifier() {
@@ -57,7 +57,7 @@ class NotifierTests: XCTestCase {
     let sut = makeSUT()
     let key = makeKey(with: 0)
 
-    sut.add(with: key) { _ in }
+    sut.add(with: key, object: self) { _ in }
     let result = sut.findValue(with: makeKey(with: 0))
 
     XCTAssertNotNil(result)
@@ -67,12 +67,26 @@ class NotifierTests: XCTestCase {
     let sut = makeSUT()
     let key = makeKey(with: 0)
 
-    sut.add(with: key) { _ in }
-    sut.remove(from: key)
+    sut.add(with: key, object: self) { _ in }
+    sut.remove(from: key, object: self)
 
     let result = sut.threadSafeObservers[key]
     XCTAssertNil(result)
     XCTAssertTrue(sut.threadSafeObservers.isEmpty)
+  }
+
+  func test_remove_deliversTwoValueThanRemoveOneAndcheckValueHasOneValue() {
+    let sut = makeSUT()
+    let key = makeKey(with: 1)
+
+    sut.add(with: key, object: self) { _ in }
+    sut.add(with: key, object: TestController()) { _ in }
+    sut.remove(from: key, object: self)
+
+    let results = sut.threadSafeObservers[key]
+
+    XCTAssertNotNil(results)
+    XCTAssertEqual(results?.count, 1)
   }
 
   // MARK; - Helper
@@ -89,5 +103,7 @@ class NotifierTests: XCTestCase {
     XCTAssertNotNil(result, file: file, line: line)
     XCTAssertEqual(result?.count, dataCount, file: file, line: line)
   }
+
+  class TestController: NSObject { }
 
 }
